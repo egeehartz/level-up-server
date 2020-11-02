@@ -1,0 +1,13 @@
+[
+    {
+        "model": "levelupapi.event",
+        "pk": 1,
+        "fields": {
+            "day": "2020-10-31",
+            "time": "02:00PM",
+            "location": "Sweetwaters",
+            "gamer": 1,
+            "game": 1
+        }
+    }
+]
