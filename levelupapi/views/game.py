@@ -26,17 +26,24 @@ class Games(ViewSet):
         # and set its properties from what was sent in the
         # body of the request from the client.
         game = Game()
-        game.title = request.data["title"]
-        game.gametype = request.data['gametype']
-        game.number_of_players = request.data["numberOfPlayers"]
-        game.skill_level = request.data["skillLevel"]
-        game.gamer = gamer
 
+        try:
+            game.title = request.data["title"]
+            game.number_of_players = request.data["numberOfPlayers"]
+            game.skill_level = request.data["skillLevel"]
+        except KeyError as ex:
+            return Response({'message': 'Incorrect key was sent in request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        game.gamer = gamer
         # Use the Django ORM to get the record from the database
         # whose `id` is what the client passed as the
         # `gameTypeId` in the body of the request.
-        gametype = GameType.objects.get(pk=request.data["gameTypeId"])
-        game.gametype = gametype
+        try:
+            gametype = GameType.objects.get(pk=request.data["gameTypeId"])
+            game.gametype = gametype
+        except GameType.DoesNotExist as ex:
+            return Response({'message': 'Game type provided is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # Try to save the new game to the database, then
         # serialize the game instance as JSON, and send the
@@ -45,7 +52,7 @@ class Games(ViewSet):
             game.save()
             serializer = GameSerializer(game, context={'request': request})
             return Response(serializer.data)
-
+        
         # If anything went wrong, catch the exception and
         # send a response with a 400 status code to tell the
         # client that something was wrong with its request data
