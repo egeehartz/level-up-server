@@ -46,9 +46,9 @@ class GameTests(APITestCase):
         url = "/games"
         data = {
             "gametype_id": 1,
-            "skillLevel": 5,
+            "skill_level": 5,
             "title": "Clue",
-            "numberOfPlayers": 6,
+            "number_of_players": 6,
             "gamer_id": 1
         }
 
